@@ -1,0 +1,12 @@
+.vs/
+bin/
+obj/
+artifacts/
+*.user
+*.suo
+*.binlog
+*.log
+TestResults/
+.ionide/
+.DS_Store
+Thumbs.db

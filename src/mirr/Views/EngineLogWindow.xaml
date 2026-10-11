@@ -1,0 +1,40 @@
+<Window
+    x:Class="mirr.Views.EngineLogWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="mirr — engine log"
+    Width="660"
+    Height="420"
+    MinWidth="420"
+    MinHeight="260"
+    Background="{StaticResource FallbackBackground}"
+    Foreground="{StaticResource TextPrimary}"
+    FontFamily="{StaticResource TextFont}"
+    UseLayoutRounding="True"
+    ShowInTaskbar="False">
+    <Grid Margin="14">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock
+            Grid.Row="0"
+            Text="ENGINE OUTPUT"
+            FontSize="10"
+            Margin="2,0,2,8"
+            Foreground="{StaticResource TextTertiary}"/>
+        <TextBox
+            x:Name="LogBox"
+            Grid.Row="1"
+            Text="{Binding LogText, Mode=OneWay}"
+            IsReadOnly="True"
+            FontFamily="{StaticResource MonoFont}"
+            FontSize="11.5"
+            Background="Transparent"
+            BorderThickness="0"
+            Foreground="{StaticResource TextSecondary}"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto"
+            TextWrapping="NoWrap"/>
+    </Grid>
+</Window>

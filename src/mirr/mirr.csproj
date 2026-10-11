@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>mirr</RootNamespace>
+    <AssemblyName>mirr</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>assets\mirr.ico</ApplicationIcon>
+    <Version>0.1.0</Version>
+    <Product>mirr</Product>
+    <Company>mirr</Company>
+    <Copyright>Copyright (c) mirr contributors</Copyright>
+    <Description>Mirror an iPhone screen over USB in real time.</Description>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="assets\mirr.ico"/>
+    <EmbeddedResource Include="Bridge\mirr_bridge.py">
+      <LogicalName>mirr_bridge.py</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

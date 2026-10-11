@@ -1,0 +1,281 @@
+<Window
+    x:Class="mirr.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+    xmlns:panels="clr-namespace:mirr.Controls"
+    Title="mirr"
+    Width="500"
+    Height="940"
+    MinWidth="430"
+    MinHeight="720"
+    WindowStyle="None"
+    ResizeMode="CanResize"
+    AllowsTransparency="False"
+    Background="Transparent"
+    Foreground="{StaticResource TextPrimary}"
+    FontFamily="{StaticResource TextFont}"
+    UseLayoutRounding="True"
+    SnapsToDevicePixels="True"
+    Icon="/assets/mirr.ico">
+
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome
+            CaptionHeight="44"
+            ResizeBorderThickness="8"
+            CornerRadius="0"
+            GlassFrameThickness="-1"
+            UseAeroCaptionButtons="False"/>
+    </shell:WindowChrome.WindowChrome>
+
+    <Border x:Name="RootBorder" Background="Transparent">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="TitleBarRow" Height="44"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="18,0,0,0">
+                    <TextBlock
+                        Text="mirr"
+                        FontFamily="{StaticResource DisplayFont}"
+                        FontWeight="SemiBold"
+                        FontSize="13"/>
+                    <TextBlock
+                        Text="{Binding DeviceName}"
+                        Margin="10,0,0,0"
+                        FontSize="12"
+                        Foreground="{StaticResource TextSecondary}">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding DeviceName}" Value="">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </StackPanel>
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Style="{StaticResource WindowButton}" Content="&#xE921;" AutomationProperties.Name="Minimize" Click="OnMinimize"/>
+                    <Button Style="{StaticResource WindowButton}" Content="&#xE922;" AutomationProperties.Name="Maximize" Click="OnMaximizeRestore"/>
+                    <Button Style="{StaticResource WindowCloseButton}" Content="&#xE8BB;" AutomationProperties.Name="Close" Click="OnClose"/>
+                </StackPanel>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="64"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border
+                    Grid.Column="0"
+                    BorderBrush="{StaticResource StrokeLayer}"
+                    BorderThickness="0,0,1,0">
+                    <DockPanel LastChildFill="True">
+                        <Border
+                            DockPanel.Dock="Bottom"
+                            Margin="6,4,6,10"
+                            Background="{StaticResource HoverLayer}"
+                            CornerRadius="12"
+                            Padding="1,6"
+                            Cursor="Hand"
+                            ToolTip="{Binding StatusDetail}"
+                            MouseLeftButtonUp="OnStatusPillClick">
+                            <TextBlock
+                                Text="{Binding PillText}"
+                                FontSize="9.5"
+                                TextAlignment="Center"
+                                HorizontalAlignment="Center"
+                                Foreground="{StaticResource TextSecondary}"/>
+                        </Border>
+                        <Border
+                            DockPanel.Dock="Bottom"
+                            Margin="7,0,7,4"
+                            Height="1"
+                            Background="{StaticResource StrokeLayer}"/>
+
+                        <StackPanel Margin="11,10,11,8">
+                            <Button
+                                x:Name="ScreenshotButton"
+                                Style="{StaticResource RailButton}"
+                                Content="&#xE722;"
+                                AutomationProperties.Name="Screenshot"
+                                IsEnabled="{Binding CanScreenshot}"
+                                ToolTip="Save a screenshot"
+                                Click="OnScreenshot"/>
+                            <Button
+                                Style="{StaticResource RailButton}"
+                                Margin="0,8,0,0"
+                                AutomationProperties.Name="Rotate"
+                                ToolTip="{Binding NextRotationLabel}"
+                                Click="OnCycleOrientation">
+                                <TextBlock
+                                    Text="&#xE7AD;"
+                                    FontFamily="{StaticResource IconFont}"
+                                    FontSize="16"
+                                    RenderTransformOrigin="0.5,0.5">
+                                    <TextBlock.RenderTransform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="{Binding Rotation}"/>
+                                            <ScaleTransform ScaleX="1"/>
+                                        </TransformGroup>
+                                    </TextBlock.RenderTransform>
+                                </TextBlock>
+                            </Button>
+                            <Button
+                                x:Name="FpsButton"
+                                Style="{StaticResource RailButton}"
+                                Margin="0,8,0,0"
+                                Content="&#xE916;"
+                                AutomationProperties.Name="Presentation rate"
+                                ToolTip="Presentation rate"
+                                Click="OnFpsMenu"/>
+                            <ToggleButton
+                                Style="{StaticResource RailToggle}"
+                                Margin="0,8,0,0"
+                                Content="&#xE718;"
+                                AutomationProperties.Name="Always on top"
+                                IsChecked="{Binding IsTopmost}"
+                                ToolTip="Always on top"/>
+                            <ToggleButton
+                                Style="{StaticResource RailToggle}"
+                                Margin="0,8,0,0"
+                                Content="{Binding FullscreenGlyph}"
+                                AutomationProperties.Name="Fullscreen"
+                                IsChecked="{Binding IsFullscreen}"
+                                ToolTip="Fullscreen (Esc to exit)"/>
+                            <Button
+                                Style="{StaticResource RailButton}"
+                                Margin="0,8,0,0"
+                                Content="&#xE9D9;"
+                                AutomationProperties.Name="Engine log"
+                                ToolTip="Engine log"
+                                Click="OnShowLog"/>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <Grid Grid.Column="1">
+                    <Border
+                        x:Name="ViewportBorder"
+                        Margin="18"
+                        CornerRadius="18"
+                        Background="{StaticResource ViewportBackground}"
+                        BorderBrush="{StaticResource ViewportStroke}"
+                        BorderThickness="1">
+                        <Grid>
+                            <panels:LetterboxPanel
+                                x:Name="VideoPanel"
+                                SourceWidth="{Binding Frame.PixelWidth, FallbackValue=390}"
+                                SourceHeight="{Binding Frame.PixelHeight, FallbackValue=844}"
+                                Rotation="{Binding Rotation}">
+                                <Image
+                                    x:Name="VideoImage"
+                                    Source="{Binding Frame}"
+                                    Stretch="Fill"
+                                    RenderOptions.BitmapScalingMode="HighQuality"/>
+                            </panels:LetterboxPanel>
+
+                            <StackPanel
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Visibility="{Binding ShowIdle, Converter={StaticResource BoolToVisibility}}">
+                                <Path
+                                    Width="46"
+                                    Height="76"
+                                    Stretch="Uniform"
+                                    Stroke="{StaticResource TextTertiary}"
+                                    StrokeThickness="1.6"
+                                    Fill="Transparent"
+                                    Data="M 6,0 H 34 A 6,6 0 0 1 40,6 V 66 A 6,6 0 0 1 34,72 H 6 A 6,6 0 0 1 0,66 V 6 A 6,6 0 0 1 6,0 Z M 16,64 H 24"/>
+                                <TextBlock
+                                    Text="{Binding IdleTitle}"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,18,0,0"
+                                    FontFamily="{StaticResource DisplayFont}"
+                                    FontWeight="SemiBold"
+                                    FontSize="14"/>
+                                <TextBlock
+                                    Text="{Binding IdleHint}"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,6,0,0"
+                                    TextAlignment="Center"
+                                    TextWrapping="Wrap"
+                                    MaxWidth="260"
+                                    FontSize="11.5"
+                                    Foreground="{StaticResource TextSecondary}"/>
+                            </StackPanel>
+
+                            <Border
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Bottom"
+                                Margin="0,0,0,18"
+                                Background="{StaticResource ToastBackground}"
+                                CornerRadius="12"
+                                Padding="14,8"
+                                BorderBrush="{StaticResource StrokeLayer}"
+                                BorderThickness="1">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ToastVisible}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock Text="{Binding ToastText}" FontSize="11.5"/>
+                            </Border>
+                        </Grid>
+                    </Border>
+
+                    <Popup
+                        x:Name="FpsPopup"
+                        PlacementTarget="{Binding ElementName=FpsButton}"
+                        Placement="Right"
+                        HorizontalOffset="6"
+                        StaysOpen="False"
+                        AllowsTransparency="True"
+                        PopupAnimation="Fade">
+                        <Border Style="{StaticResource PopupPanel}">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton
+                                    x:Name="Fps15Chip"
+                                    Style="{StaticResource FpsChip}"
+                                    GroupName="fps"
+                                    Content="15"
+                                    ToolTip="Cap at 15 fps"
+                                    Checked="OnFps15"/>
+                                <RadioButton
+                                    x:Name="Fps30Chip"
+                                    Style="{StaticResource FpsChip}"
+                                    GroupName="fps"
+                                    Content="30"
+                                    ToolTip="Cap at 30 fps"
+                                    Checked="OnFps30"/>
+                                <RadioButton
+                                    x:Name="Fps60Chip"
+                                    Style="{StaticResource FpsChip}"
+                                    GroupName="fps"
+                                    Content="60"
+                                    IsChecked="True"
+                                    ToolTip="Cap at 60 fps"
+                                    Checked="OnFps60"/>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+                </Grid>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>
